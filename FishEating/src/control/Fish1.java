@@ -29,8 +29,5 @@ public class Fish1 extends FishTpl {
     public void getNext(List fishList) {
         Random random = new Random();
         Methods.nextMoveTo(this, random.nextDouble() * 2 - 1, random.nextDouble() * 2 - 1, random.nextDouble());
-
-//        this.setNextX(this.getX() - 10);
-//        this.setNextY(this.getY());
     }
 }

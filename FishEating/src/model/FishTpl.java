@@ -37,18 +37,23 @@ public class FishTpl {
         this.time = 0;
         Random random = new Random();
         this.setX(Math.abs(random.nextDouble() * R.screenX));
-        System.out.println(this.getX());
+//        System.out.println(this.getX());
         this.setY(Math.abs(random.nextDouble() * R.screenY));
-        System.out.println(this.getY());
+//        System.out.println(this.getY());
         this.setRadius(R.initSize + R.initSizeAdjust * random.nextDouble());
-        System.out.println(this.getRadius());
+//        System.out.println(this.getRadius());
 
         color = new Color(
                 (new Double(Math.random() * 128)).intValue() + 128,
                 (new Double(Math.random() * 128)).intValue() + 128,
                 (new Double(Math.random() * 128)).intValue() + 128);
     }
-
+    
+    //需要鼠标跟随时的AI，否则同getNext(fishList)
+    public void getNext(List fishList, int mouseX, int mouseY) {
+        getNext(fishList);
+    }
+    
     //AI需要重写的方法。表示下一步要走的情况
     public void getNext(List fishList) {
         this.setNextX(this.getX() + 10);

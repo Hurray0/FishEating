@@ -12,8 +12,10 @@ package model;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.abs;
+import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import model.*;
@@ -24,10 +26,17 @@ import model.*;
  */
 public class Methods {
 
+    public static int num = 0;
+
     public static double getDistance(FishTpl fish1, FishTpl fish2) {
         return (sqrt(Math.pow(fish1.getX() - fish2.getX(), 2)
                 + Math.pow(fish1.getY() - fish2.getY(), 2))
                 - fish1.getRadius() - fish2.getRadius());
+    }
+
+    public static double getDistance(FishTpl fish1, double x, double y) {
+        return (sqrt(Math.pow(fish1.getX() - x, 2)
+                + Math.pow(fish1.getY() - y, 2)));
     }
 
     public static boolean canEat(FishTpl fish1, FishTpl fish2) {
@@ -57,6 +66,9 @@ public class Methods {
                 vectorX /= abs(vectorX);
             } else if (vectorX == 0 && vectorY != 0) {
                 vectorY /= abs(vectorY);
+            } else {
+                thisFish.setNextX(thisFish.getX());
+                thisFish.setNextY(thisFish.getY());
             }
 
             double newX = thisFish.getX() + vectorX * speed;
@@ -72,7 +84,13 @@ public class Methods {
     }
 
     public static void nextMoveToPoint(FishTpl thisFish, double x, double y) {
-        nextMoveTo(thisFish, x - thisFish.getX(), y - thisFish.getY(), 1);
+        if (Methods.getDistance(thisFish, x, y) <= R.maxSpeed) {
+            nextMoveTo(thisFish, 0, 0, 0);
+        } else {
+            nextMoveTo(thisFish, x - thisFish.getX(), y - thisFish.getY(), 1);
+        }
+//        thisFish.setNextX(x);
+//        thisFish.setNextY(y);
     }
 
     public static void nextMoveToPoint(FishTpl thisFish, double x, double y, double percentage) {
@@ -90,18 +108,26 @@ public class Methods {
                 if (thisFish == thatFish) {
                     continue;
                 } else {
-                    if(canEat(thisFish, thatFish))
-                    {
-                        removeList.add(thatFish);
-//                        System.out.println("刪除一條魚");
+                    if (canEat(thisFish, thatFish)) {
+                        if (!removeList.contains(thatFish)) {
+                            removeList.add(thatFish);
+                        }
                     }
                 }
             }
         }
-        
-        itr = removeList.iterator();
-        while(itr.hasNext()) {
-            fishList.remove(itr.next());
-        }
+
+//        itr = removeList.iterator();
+//        while (itr.hasNext()) {
+//            try {
+//                fishList.remove(itr.next());
+//                num++;
+//                System.out.println("刪除一條魚No." + num);
+//            } catch (Exception e) {
+//            }
+//        }
+        fishList.removeAll(removeList);
     }
+
+    
 }
