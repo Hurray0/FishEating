@@ -10,8 +10,12 @@
  */
 package model;
 
-import control.Fish;
+import static java.lang.Math.abs;
+import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import model.*;
 
 /**
@@ -20,17 +24,84 @@ import model.*;
  */
 public class Methods {
 
-    public static double getDistance(Fish fish1, Fish fish2) {
+    public static double getDistance(FishTpl fish1, FishTpl fish2) {
         return (sqrt(Math.pow(fish1.getX() - fish2.getX(), 2)
                 + Math.pow(fish1.getY() - fish2.getY(), 2))
                 - fish1.getRadius() - fish2.getRadius());
     }
 
-    public static boolean canEat(Fish fish1, Fish fish2) {
-        if (getDistance(fish1, fish2) <= 0) {
+    public static boolean canEat(FishTpl fish1, FishTpl fish2) {
+        if (getDistance(fish1, fish2) <= 0 && fish1.getRadius() > fish2.getRadius()) {
             return true;
         } else {
+//            System.out.println("吃不了");
             return false;
+        }
+    }
+
+    public static void nextMoveTo(FishTpl thisFish, double vectorX, double vectorY, double percentage) {
+        if (thisFish.isIsAlive()) {
+            //实际要求vectorX和vectorY都不大于1，不小于-1。但此处仍做了错误处理。即二者的比例才起作用
+            percentage = percentage > 1 ? 1 : percentage;
+            percentage = percentage < 0 ? 0 : percentage;
+            double speed = R.maxSpeed * percentage;
+            if (vectorX != 0 && vectorY != 0) {
+                if (Math.abs(vectorX) >= Math.abs(vectorY)) {
+                    vectorY /= abs(vectorX);
+                    vectorX /= abs(vectorX);
+                } else {
+                    vectorX /= abs(vectorY);
+                    vectorY /= abs(vectorY);
+                }
+            } else if (vectorX != 0 && vectorY == 0) {
+                vectorX /= abs(vectorX);
+            } else if (vectorX == 0 && vectorY != 0) {
+                vectorY /= abs(vectorY);
+            }
+
+            double newX = thisFish.getX() + vectorX * speed;
+            newX = newX > R.screenX ? R.screenX : newX;
+            newX = newX < 0 ? 0 : newX;
+            double newY = thisFish.getY() + vectorY * speed;
+            newY = newY > R.screenY ? R.screenY : newY;
+            newY = newY < 0 ? 0 : newY;
+            thisFish.setNextX(newX);
+            thisFish.setNextY(newY);
+            thisFish.setTime(thisFish.getTime() + 1);
+        }
+    }
+
+    public static void nextMoveToPoint(FishTpl thisFish, double x, double y) {
+        nextMoveTo(thisFish, x - thisFish.getX(), y - thisFish.getY(), 1);
+    }
+
+    public static void nextMoveToPoint(FishTpl thisFish, double x, double y, double percentage) {
+        nextMoveTo(thisFish, x - thisFish.getX(), y - thisFish.getY(), percentage);
+    }
+
+    public static void removeEatenFish(List fishList) {
+        List removeList = new ArrayList();
+        Iterator itr = fishList.iterator();
+        while (itr.hasNext()) {
+            FishTpl thisFish = (FishTpl) itr.next();
+            Iterator itr2 = fishList.iterator();
+            while (itr2.hasNext()) {
+                FishTpl thatFish = (FishTpl) itr2.next();
+                if (thisFish == thatFish) {
+                    continue;
+                } else {
+                    if(canEat(thisFish, thatFish))
+                    {
+                        removeList.add(thatFish);
+//                        System.out.println("刪除一條魚");
+                    }
+                }
+            }
+        }
+        
+        itr = removeList.iterator();
+        while(itr.hasNext()) {
+            fishList.remove(itr.next());
         }
     }
 }
