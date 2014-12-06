@@ -41,13 +41,34 @@ public class Methods {
 
     }
 
+    public static FishTpl getNearistFish(FishTpl thisFish, List fishList) {
+        FishTpl thatFish, minFish = null;
+        double tmpMin = -1;
+        for (int i = 0; i < fishList.size(); i++) {
+            thatFish = (FishTpl) fishList.get(i);
+            if (!thatFish.isIsAlive()) {
+                continue;
+            }
+            if ((tmpMin == -1
+                    || tmpMin > Methods.getDistance(thisFish, thatFish)
+                    && thisFish != thatFish)) {
+                minFish = thatFish;
+                tmpMin = Methods.getDistance(thisFish, thatFish);
+            }
+        }
+        return minFish;
+    }
+
     public static FishTpl getNearistSmallFish(FishTpl thisFish, List fishList) {
         FishTpl thatFish, minFish = null;
         double tmpMin = -1;
         for (int i = 0; i < fishList.size(); i++) {
             thatFish = (FishTpl) fishList.get(i);
-            if ((tmpMin == -1 || 
-                    tmpMin > Methods.getDistance(thisFish, thatFish) 
+            if (!thatFish.isIsAlive()) {
+                continue;
+            }
+            if ((tmpMin == -1
+                    || tmpMin > Methods.getDistance(thisFish, thatFish)
                     && thisFish != thatFish)
                     && thisFish.getRadius() > thatFish.getRadius()) {
                 minFish = thatFish;
@@ -56,14 +77,17 @@ public class Methods {
         }
         return minFish;
     }
-    
+
     public static FishTpl getNearistBigFish(FishTpl thisFish, List fishList) {
         FishTpl thatFish, maxFish = null;
         double tmpMax = -1;
         for (int i = 0; i < fishList.size(); i++) {
             thatFish = (FishTpl) fishList.get(i);
-            if ((tmpMax == -1 ||
-                    tmpMax < Methods.getDistance(thisFish, thatFish)
+            if (!thatFish.isIsAlive()) {
+                continue;
+            }
+            if ((tmpMax == -1
+                    || tmpMax < Methods.getDistance(thisFish, thatFish)
                     && thisFish != thatFish)
                     && thisFish.getRadius() < thatFish.getRadius()) {
                 maxFish = thatFish;
@@ -74,16 +98,18 @@ public class Methods {
     }
 
     public static double getDistance(FishTpl fish1, FishTpl fish2) {
-        if(fish1 == null || fish2 == null)
+        if (fish1 == null || fish2 == null) {
             return 999999999;
+        }
         return (sqrt(Math.pow(fish1.getX() - fish2.getX(), 2)
                 + Math.pow(fish1.getY() - fish2.getY(), 2))
                 - fish1.getRadius() - fish2.getRadius());
     }
 
     public static double getDistance(FishTpl fish1, double x, double y) {
-        if(fish1 == null)
+        if (fish1 == null) {
             return 999999999;
+        }
         return (sqrt(Math.pow(fish1.getX() - x, 2)
                 + Math.pow(fish1.getY() - y, 2)));
     }
@@ -159,24 +185,29 @@ public class Methods {
                     continue;
                 } else {
                     if (canEat(thisFish, thatFish)) {
-                        if (!removeList.contains(thatFish)) {
-                            removeList.add(thatFish);
-                        }
+//                        if (!removeList.contains(thatFish)) {
+//                            removeList.add(thatFish);
+//                        }
+//                        System.out.println("删鱼！！！！");
+                        thatFish.setIsAlive(false);
                     }
+
                 }
             }
         }
 
+//        //由硬删除改为软删除
 //        itr = removeList.iterator();
 //        while (itr.hasNext()) {
 //            try {
-//                fishList.remove(itr.next());
-//                num++;
-//                System.out.println("刪除一條魚No." + num);
+//                ((FishTpl)itr.next()).setIsAlive(false);
+////                fishList.remove(itr.next());
+////                num++;
+////                System.out.println("刪除一條魚No." + num);
 //            } catch (Exception e) {
 //            }
 //        }
-        fishList.removeAll(removeList);
+//        fishList.removeAll(removeList);
     }
 
 }

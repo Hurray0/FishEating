@@ -22,28 +22,24 @@ import model.Methods;
  */
 public class Fish3 extends FishTpl {
 
-    public Fish3()
-    {
+    public Fish3() {
         this.setColor(Color.yellow);
+//        System.out.println(this.isIsAlive());
     }
-    
+
     public void getNext(List fishList) {
-        FishTpl smallFish = Methods.getNearistSmallFish(this, fishList);
-        FishTpl bigFish = Methods.getNearistBigFish(this, fishList);
-        if(smallFish == null)
-        {
-            Methods.nextMoveToPoint(this, bigFish.getX(), bigFish.getY(), -1);
-            return ;
-        }
-        if(Methods.getDistance(this, bigFish) < Methods.getDistance(this, smallFish))
-        {
-            Methods.nextMoveToPoint(this, bigFish.getX(), bigFish.getY(), -1);
-//            System.out.println("远离！！");
-        }
-        else
-        {
-            Methods.nextMoveToPoint(this, smallFish.getX(), smallFish.getY(), 1);
+        FishTpl nearistFish = Methods.getNearistFish(this, fishList);
+        boolean isSmallThanMe = nearistFish.getRadius() < this.getRadius() ? true : false;
+        if(nearistFish == null)
+            return;
+        if (isSmallThanMe) {
+            Methods.nextMoveToPoint(this, nearistFish.getX(), nearistFish.getY(), 1);
 //            System.out.println("贴近！！！！");
+
+        } else {
+            Methods.nextMoveToPoint(this, nearistFish.getX(), nearistFish.getY(), -1);
+//            System.out.println("远离！！");
+
         }
     }
 }

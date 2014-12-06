@@ -31,6 +31,6 @@ public class Fish2 extends FishTpl {
     public void getNext(List fishList, int mouseX, int mouseY) {
 
         Methods.nextMoveToPoint(this, mouseX, mouseY);
-        System.out.println(mouseX + " " + mouseY + " " + this.getX() + " " + this.getY());
+//        System.out.println(mouseX + " " + mouseY + " " + this.getX() + " " + this.getY());
     }
 }

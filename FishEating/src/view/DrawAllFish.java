@@ -31,15 +31,17 @@ public class DrawAllFish extends JPanel {
         Iterator itr = fishList.iterator();
         while (itr.hasNext()) {
             FishTpl thisFish = (FishTpl) itr.next();
+            if(!thisFish.isIsAlive())
+                continue;
 
             g.setColor(thisFish.getColor());
             g.fillOval((int) (thisFish.getX() - thisFish.getRadius()),
                     (int) (thisFish.getY()- thisFish.getRadius()),
                     (int) thisFish.getRadius()*2, (int) thisFish.getRadius()*2);
             if (thisFish.getColor() == Color.BLUE) {
-                System.out.println("【】" + (int) (thisFish.getX() - thisFish.getRadius()) + " "
-                        + (int) (thisFish.getY() - thisFish.getRadius()) + " "
-                        + (int) thisFish.getRadius());
+//                System.out.println("【】" + (int) (thisFish.getX() - thisFish.getRadius()) + " "
+//                        + (int) (thisFish.getY() - thisFish.getRadius()) + " "
+//                        + (int) thisFish.getRadius());
             }
 //            g.fillOval(-100,-100,200,200);
             g.setColor(java.awt.SystemColor.controlShadow); // 设置边框颜色
