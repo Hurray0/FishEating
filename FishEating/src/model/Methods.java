@@ -28,13 +28,62 @@ public class Methods {
 
     public static int num = 0;
 
+    public static class ComparatorFishByRadius implements Comparator {
+
+        public int compare(Object arg0, Object arg1) {
+            FishTpl fish1 = (FishTpl) arg0;
+            FishTpl fish2 = (FishTpl) arg0;
+
+            return (int) ((fish1.getRadius() - fish2.getRadius())
+                    / abs(fish1.getRadius() - fish2.getRadius()));
+
+        }
+
+    }
+
+    public static FishTpl getNearistSmallFish(FishTpl thisFish, List fishList) {
+        FishTpl thatFish, minFish = null;
+        double tmpMin = -1;
+        for (int i = 0; i < fishList.size(); i++) {
+            thatFish = (FishTpl) fishList.get(i);
+            if ((tmpMin == -1 || 
+                    tmpMin > Methods.getDistance(thisFish, thatFish) 
+                    && thisFish != thatFish)
+                    && thisFish.getRadius() > thatFish.getRadius()) {
+                minFish = thatFish;
+                tmpMin = Methods.getDistance(thisFish, thatFish);
+            }
+        }
+        return minFish;
+    }
+    
+    public static FishTpl getNearistBigFish(FishTpl thisFish, List fishList) {
+        FishTpl thatFish, maxFish = null;
+        double tmpMax = -1;
+        for (int i = 0; i < fishList.size(); i++) {
+            thatFish = (FishTpl) fishList.get(i);
+            if ((tmpMax == -1 ||
+                    tmpMax < Methods.getDistance(thisFish, thatFish)
+                    && thisFish != thatFish)
+                    && thisFish.getRadius() < thatFish.getRadius()) {
+                maxFish = thatFish;
+                tmpMax = Methods.getDistance(thisFish, thatFish);
+            }
+        }
+        return maxFish;
+    }
+
     public static double getDistance(FishTpl fish1, FishTpl fish2) {
+        if(fish1 == null || fish2 == null)
+            return 999999999;
         return (sqrt(Math.pow(fish1.getX() - fish2.getX(), 2)
                 + Math.pow(fish1.getY() - fish2.getY(), 2))
                 - fish1.getRadius() - fish2.getRadius());
     }
 
     public static double getDistance(FishTpl fish1, double x, double y) {
+        if(fish1 == null)
+            return 999999999;
         return (sqrt(Math.pow(fish1.getX() - x, 2)
                 + Math.pow(fish1.getY() - y, 2)));
     }
@@ -52,7 +101,7 @@ public class Methods {
         if (thisFish.isIsAlive()) {
             //实际要求vectorX和vectorY都不大于1，不小于-1。但此处仍做了错误处理。即二者的比例才起作用
             percentage = percentage > 1 ? 1 : percentage;
-            percentage = percentage < 0 ? 0 : percentage;
+            percentage = percentage < -1 ? -1 : percentage;
             double speed = R.maxSpeed * percentage;
             if (vectorX != 0 && vectorY != 0) {
                 if (Math.abs(vectorX) >= Math.abs(vectorY)) {
@@ -85,7 +134,8 @@ public class Methods {
 
     public static void nextMoveToPoint(FishTpl thisFish, double x, double y) {
         if (Methods.getDistance(thisFish, x, y) <= R.maxSpeed) {
-            nextMoveTo(thisFish, 0, 0, 0);
+            thisFish.setNextX(x);
+            thisFish.setNextY(y);
         } else {
             nextMoveTo(thisFish, x - thisFish.getX(), y - thisFish.getY(), 1);
         }
@@ -129,5 +179,4 @@ public class Methods {
         fishList.removeAll(removeList);
     }
 
-    
 }

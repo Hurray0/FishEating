@@ -64,6 +64,10 @@ public class FishEating extends JFrame {
             fishList.add(new Fish1());
         }
         fishList.add(new Fish2());
+        for (int i = 0; i < 10; i++) {
+            fishList.add(new Fish3());
+        }
+//        fishList.add(new Fish3());
 //        //這裡對魚進行排序操作
 //        ComparatorFish comparator = new ComparatorFish();
 //        Collections.sort(fishList, comparator);
@@ -102,18 +106,7 @@ public class FishEating extends JFrame {
         }.start();
     }
 
-    public class ComparatorFish implements Comparator {
-
-        public int compare(Object arg0, Object arg1) {
-            FishTpl fish1 = (FishTpl) arg0;
-            FishTpl fish2 = (FishTpl) arg0;
-
-            return (int)((fish1.getRadius() - fish2.getRadius())/
-                    abs(fish1.getRadius() - fish2.getRadius()));
-
-        }
-
-    }
+    
     
     public static void main(String[] args) {
 
