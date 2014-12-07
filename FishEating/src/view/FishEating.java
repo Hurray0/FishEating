@@ -14,6 +14,7 @@ import control.*;
 import control.Fish1;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import static java.lang.Math.abs;
 //import java.awt.*;
@@ -47,6 +48,79 @@ public class FishEating extends JFrame {
 
     }
     
+    class mouseClickListener implements MouseListener {
+
+        List fishList;
+
+        class AI_Info {
+            public int totalNum = 0;
+            public int aliveNum = 0;
+            public int totalTime = 0;
+
+            public void addFish(FishTpl thisFish) {
+                totalTime += thisFish.getTime();
+                totalNum += 1;
+                if(thisFish.isIsAlive())
+                {
+                    aliveNum += 1;
+                }
+            }
+        }
+
+        public mouseClickListener(List fishList) {
+            this.fishList = fishList;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int maxTime = 0;
+            HashMap<Integer, AI_Info> map = new HashMap<Integer, AI_Info>();
+            for (int i = 0; i < fishList.size(); i++) {
+                FishTpl thisFish = (FishTpl) fishList.get(i);
+                int thisTime = thisFish.getTime();
+                if (thisFish.getTime() > maxTime) {
+                    maxTime = thisTime;
+                }
+                if (map.containsKey(thisFish.getType())) {
+                    AI_Info thisAI = map.get(thisFish.getType());
+                    thisAI.addFish(thisFish);
+                } else {
+                    AI_Info newAI = new AI_Info();
+                    newAI.addFish(thisFish);
+                    map.put(thisFish.getType(), newAI);
+                }
+            }
+
+            System.out.println("总时间为：" + maxTime);
+            Iterator iter = map.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                int key = (int) entry.getKey();
+                AI_Info ai = (AI_Info) entry.getValue();
+                System.out.println("AI-" + key + ": 共"+ ai.totalNum +"个， "
+                        + "死亡"+(ai.totalNum - ai.aliveNum)+"个， "
+                        + "存活"+ai.aliveNum+"个，"
+                        + "平均存活时间为"+ai.totalTime/ai.totalNum);
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+    }
+
     public FishEating() {
 
         fishList = new ArrayList();
@@ -58,14 +132,21 @@ public class FishEating extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         this.addMouseMotionListener(new myMouseListener());//对在面板上的鼠标移动进行监听。
+        this.addMouseListener(new mouseClickListener(fishList));
 
         //这里添加鱼
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             fishList.add(new Fish1());
         }
-        fishList.add(new Fish2());
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             fishList.add(new Fish3());
+        }
+        for (int i = 0; i < 100; i++) {
+            fishList.add(new Fish4());
+        }
+//        fishList.add(new Fish2());
+        for (int i = 0; i < 100; i++) {
+            fishList.add(new Fish5());
         }
 //        fishList.add(new Fish3());
 //        //這裡對魚進行排序操作
@@ -84,30 +165,32 @@ public class FishEating extends JFrame {
             public void run() {
                 while (true) {
                     Iterator itr = fishList.iterator();
-                    while (itr.hasNext()) {
-                        FishTpl thisFish = (FishTpl) itr.next();
-                        thisFish.getNext(fishList, mouseX, mouseY);
+                    for (int i = 0; i < fishList.size(); i++) {
+                        FishTpl thisFish = (FishTpl) fishList.get(i);
+                        if (thisFish.isIsAlive()) {
+                            thisFish.getNext(fishList, mouseX, mouseY);
+                        }
 //                        System.out.println("X="+mouseX+" "+"Y="+mouseY);
                     }
                     for (int i = 0; i < fishList.size(); i++) {
                         FishTpl thisFish = (FishTpl) fishList.get(i);
-                        thisFish.move();
+                        if (thisFish.isIsAlive()) {
+                            thisFish.move();
+                        }
                     }
                     Methods.removeEatenFish(fishList);
+                    repaint();
                     try {
                         Thread.sleep(R.SLEEPTIME);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
 
-                    repaint();
                 }
             }
         }.start();
     }
 
-    
-    
     public static void main(String[] args) {
 
         new FishEating();

@@ -24,7 +24,8 @@ import model.R;
 public class Fish2 extends FishTpl {
 
     public Fish2() {
-        this.setColor(Color.blue);
+        this.setColor(Color.ORANGE);
+        this.setType(2);
         this.setRadius(R.initSize + R.initSizeAdjust);
     }
 

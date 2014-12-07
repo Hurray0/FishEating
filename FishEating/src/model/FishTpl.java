@@ -31,10 +31,15 @@ public class FishTpl {
     private int time; //鱼从生成到现在经历的时间单位
     private boolean isAlive; //是否还活着
     private Color color; //鱼的颜色
+    private int type; //AI的序号
+//    public static int totalTime = 0; //总时间
+//    public static int num = 0;//总个数
+//    public static int deadNum = 0;//死亡个数
 
     public FishTpl() {
         this.isAlive = true;
         this.time = 0;
+//        this.num ++;
         Random random = new Random();
         this.setX(Math.abs(random.nextDouble() * R.screenX));
 //        System.out.println(this.getX());
@@ -49,7 +54,7 @@ public class FishTpl {
                 (new Double(Math.random() * 128)).intValue() + 128);
     }
     
-    //需要鼠标跟随时的AI，否则同getNext(fishList)
+    //需要鼠标跟随 时的AI，否则同getNext(fishList)
     public void getNext(List fishList, int mouseX, int mouseY) {
         getNext(fishList);
     }
@@ -63,6 +68,8 @@ public class FishTpl {
     public void move() {
         this.setX(this.getNextX());
         this.setY(this.getNextY());
+        this.addTime();
+//        this.totalTime ++;
     }
 
     public int getTime() {
@@ -72,11 +79,19 @@ public class FishTpl {
     public void setTime(int time) {
         this.time = time;
     }
+    
+    public void addTime() {
+        this.time ++;
+    }
 
     public boolean isIsAlive() {
         return isAlive;
     }
 
+    public void goDead() {
+        this.setIsAlive(false);
+    }
+    
     public void setIsAlive(boolean isAlive) {
         this.isAlive = isAlive;
     }
@@ -127,5 +142,13 @@ public class FishTpl {
     
     public Color getColor(){
         return color;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

@@ -24,6 +24,7 @@ public class Fish1 extends FishTpl {
 
     public Fish1(){
         this.setColor(Color.red);
+        this.setType(1);
     }
     
     public void getNext(List fishList) {

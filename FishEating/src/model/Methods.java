@@ -41,17 +41,24 @@ public class Methods {
 
     }
 
+    public static double getNearistWall(FishTpl thisFish) {
+        double tmp;
+        tmp = thisFish.getX() < thisFish.getY() ? thisFish.getX() : thisFish.getY();
+        tmp = tmp < (R.screenX - thisFish.getX()) ? tmp : (R.screenX - thisFish.getX());
+        tmp = tmp < (R.screenY - thisFish.getY()) ? tmp : (R.screenY - thisFish.getY());
+
+        return tmp;
+    }
+
     public static FishTpl getNearistFish(FishTpl thisFish, List fishList) {
         FishTpl thatFish, minFish = null;
         double tmpMin = -1;
         for (int i = 0; i < fishList.size(); i++) {
             thatFish = (FishTpl) fishList.get(i);
-            if (!thatFish.isIsAlive()) {
+            if (!thatFish.isIsAlive() || thatFish == thisFish) {
                 continue;
             }
-            if ((tmpMin == -1
-                    || tmpMin > Methods.getDistance(thisFish, thatFish)
-                    && thisFish != thatFish)) {
+            if (tmpMin == -1 || tmpMin > Methods.getDistance(thisFish, thatFish)) {
                 minFish = thatFish;
                 tmpMin = Methods.getDistance(thisFish, thatFish);
             }
@@ -64,12 +71,10 @@ public class Methods {
         double tmpMin = -1;
         for (int i = 0; i < fishList.size(); i++) {
             thatFish = (FishTpl) fishList.get(i);
-            if (!thatFish.isIsAlive()) {
+            if (!thatFish.isIsAlive() || thatFish == thisFish) {
                 continue;
             }
-            if ((tmpMin == -1
-                    || tmpMin > Methods.getDistance(thisFish, thatFish)
-                    && thisFish != thatFish)
+            if ((tmpMin == -1 || tmpMin > Methods.getDistance(thisFish, thatFish))
                     && thisFish.getRadius() > thatFish.getRadius()) {
                 minFish = thatFish;
                 tmpMin = Methods.getDistance(thisFish, thatFish);
@@ -83,13 +88,11 @@ public class Methods {
         double tmpMax = -1;
         for (int i = 0; i < fishList.size(); i++) {
             thatFish = (FishTpl) fishList.get(i);
-            if (!thatFish.isIsAlive()) {
+            if (!thatFish.isIsAlive() || thatFish == thisFish) {
                 continue;
             }
-            if ((tmpMax == -1
-                    || tmpMax < Methods.getDistance(thisFish, thatFish)
-                    && thisFish != thatFish)
-                    && thisFish.getRadius() < thatFish.getRadius()) {
+            if ((tmpMax == -1 || tmpMax < Methods.getDistance(thisFish, thatFish))
+                    && thisFish.getRadius() <= thatFish.getRadius()) {
                 maxFish = thatFish;
                 tmpMax = Methods.getDistance(thisFish, thatFish);
             }
@@ -170,7 +173,11 @@ public class Methods {
     }
 
     public static void nextMoveToPoint(FishTpl thisFish, double x, double y, double percentage) {
+//        System.out.println("nextMoveTo(thisFish, " + x + ", "
+//                + y + ", " + (percentage)
+//                + ")");
         nextMoveTo(thisFish, x - thisFish.getX(), y - thisFish.getY(), percentage);
+
     }
 
     public static void removeEatenFish(List fishList) {
@@ -189,7 +196,7 @@ public class Methods {
 //                            removeList.add(thatFish);
 //                        }
 //                        System.out.println("删鱼！！！！");
-                        thatFish.setIsAlive(false);
+                        thatFish.goDead();
                     }
 
                 }

@@ -10,11 +10,12 @@
  */
 package view;
 
-import model.FishTpl;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseListener;
 import java.util.*;
 import javax.swing.JPanel;
+import model.FishTpl;
 
 /**
  * @Author hurray
